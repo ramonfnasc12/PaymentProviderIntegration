@@ -1,7 +1,7 @@
 {
   "name": "payment-provider",
   "vendor": "partnerintegrationbra",
-  "version": "0.0.1",
+  "version": "0.1.0-beta.0",
   "title": "Payment Provider Example",
   "description": "Reference app for Payment-Provider protocol implementers",
   "builders": {
