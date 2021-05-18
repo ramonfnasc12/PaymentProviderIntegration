@@ -1,5 +1,4 @@
 import {
-  isBankInvoiceAuthorization,
   isCardAuthorization,
   isTokenizedCard,
   AuthorizationRequest,
@@ -68,12 +67,25 @@ export const flows: Record<
         tid: randomString(),
       })
     )
+    const { paymentId, inboundRequestsUrl } = request;
 
-    return Authorizations.pendingBankInvoice(request, {
+    return {
+      paymentId,
+      status: 'undefined',
+      acquirer: null,
+      code: null,
+      message: null,
+      paymentAppData: { "appName": "partnerintegrationbra.payment-provider", "payload": JSON.stringify({inboundRequestsUrl}) },
+      identificationNumber: undefined,
+      identificationNumberFormatted: undefined,
+      barCodeImageNumber: undefined,
+      barCodeImageType: undefined,
       delayToCancel: 1000,
-      paymentUrl: randomUrl(),
+      //BankIssueInvoiceUrl: "https://www.google.com.br",
+      paymentUrl: "https://www.google.com.br",
       tid: randomString(),
-    })
+    }
+
   },
 
   Redirect: (request, callback) => {
@@ -108,6 +120,8 @@ const cardResponses: Record<CardNumber, Flow> = {
   null: 'Redirect',
 }
 
+const isBankInvoiceAuthorization = (authorization: AuthorizationRequest) => ['BankInvoice', "Boleto Bancário"].includes(authorization.paymentMethod);
+
 const findFlow = (request: AuthorizationRequest): Flow => {
   if (isBankInvoiceAuthorization(request)) return 'BankInvoice'
 
@@ -126,6 +140,6 @@ export const executeAuthorization = (
   callback: (response: AuthorizationResponse) => void
 ): AuthorizationResponse => {
   const flow = findFlow(request)
-
+  console.log(flow)
   return flows[flow](request, callback)
 }

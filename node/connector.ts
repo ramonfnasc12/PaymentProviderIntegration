@@ -24,43 +24,28 @@ export default class TestSuiteApprover extends PaymentProvider {
   public async authorize(
     authorization: AuthorizationRequest
   ): Promise<AuthorizationResponse> {
-    if (this.isTestSuite) {
       return executeAuthorization(authorization, response =>
         this.callback(authorization, response)
       )
-    }
-
-    throw new Error('Not implemented')
   }
 
   public async cancel(
     cancellation: CancellationRequest
   ): Promise<CancellationResponse> {
-    if (this.isTestSuite) {
       return Cancellations.approve(cancellation, {
         cancellationId: randomString(),
       })
-    }
-
-    throw new Error('Not implemented')
   }
 
   public async refund(refund: RefundRequest): Promise<RefundResponse> {
-    if (this.isTestSuite) {
       return Refunds.deny(refund)
-    }
-
-    throw new Error('Not implemented')
   }
 
   public async settle(
     settlement: SettlementRequest
   ): Promise<SettlementResponse> {
-    if (this.isTestSuite) {
-      return Settlements.deny(settlement)
-    }
 
-    throw new Error('Not implemented')
+      return Settlements.approve(settlement,{settleId:"123456"})
   }
 
   public inbound: undefined

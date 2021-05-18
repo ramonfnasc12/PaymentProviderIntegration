@@ -7,6 +7,9 @@
   "builders": {
     "paymentProvider": "1.x",
     "node": "6.x",
+    "react": "2.x",
+    "pages": "0.x",
+    "messages": "0.x",
     "docs": "0.x"
   },
   "policies": [

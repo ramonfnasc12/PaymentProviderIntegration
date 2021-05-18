@@ -1,5 +1,9 @@
 {
-  "name": "TestSuitApprover",
+  "name": "IntegrationConnector",
+  "implementsSplit": true,
+  "usesAntifraud": true,
+  "usesBankInvoiceEnglishName": true,
+  "usesSecureProxy": true,
   "paymentMethods": [
     {
       "name": "Visa",
@@ -28,6 +32,74 @@
     {
       "name": "BankInvoice",
       "allowsSplit": "onAuthorize"
+    },
+    {
+      "name": "VirtualDebitElo",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Credz",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Banricompras",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Aura",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "JCB",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Discover",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Privatelabels",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Cobranded",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Maestro",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Visa Electron",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Cabal",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Bitcoin",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Safetypay",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "SPEI",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Pix",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Cash",
+      "allowsSplit": "onCapture"
+    },
+    {
+      "name": "Promissories",
+      "allowsSplit": "onCapture"
     }
   ]
 }
