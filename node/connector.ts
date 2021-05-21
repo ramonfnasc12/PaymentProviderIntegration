@@ -24,28 +24,27 @@ export default class TestSuiteApprover extends PaymentProvider {
   public async authorize(
     authorization: AuthorizationRequest
   ): Promise<AuthorizationResponse> {
-      return executeAuthorization(authorization, response =>
-        this.callback(authorization, response)
-      )
+    return executeAuthorization(authorization, response =>
+      this.callback(authorization, response)
+    )
   }
 
   public async cancel(
     cancellation: CancellationRequest
   ): Promise<CancellationResponse> {
-      return Cancellations.approve(cancellation, {
-        cancellationId: randomString(),
-      })
+    return Cancellations.approve(cancellation, {
+      cancellationId: randomString(),
+    })
   }
 
   public async refund(refund: RefundRequest): Promise<RefundResponse> {
-      return Refunds.deny(refund)
+    return Refunds.deny(refund)
   }
 
   public async settle(
     settlement: SettlementRequest
   ): Promise<SettlementResponse> {
-
-      return Settlements.approve(settlement,{settleId:"123456"})
+    return Settlements.approve(settlement, { settleId: '123456' })
   }
 
   public inbound: undefined

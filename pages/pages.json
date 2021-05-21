@@ -1,6 +1,6 @@
 {
   "extensions": {
-    "checkout/transactions/example-payment-auth-app": {
+    "checkout/transactions/payment-provider": {
       "component": "index"
     }
   }

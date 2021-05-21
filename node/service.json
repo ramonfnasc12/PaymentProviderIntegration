@@ -1,0 +1,52 @@
+{
+    "memory": 256,
+    "ttl": 10,
+    "timeout": 2,
+    "minReplicas": 2,
+    "maxReplicas": 4,
+    "routes": {
+        "manifest": {
+            "path": "/_v/partnerintegrationbra.payment-provider/v0/manifest",
+            "handler": "vtex.payment-gateway@1.x/providerManifest",
+            "headers": {
+                "x-provider-app": "partnerintegrationbra.payment-provider@0.1.1-beta.1"
+            },
+            "public": true
+        },
+        "paymentMethods": {
+            "path": "/_v/partnerintegrationbra.payment-provider/v0/payment-methods",
+            "handler": "vtex.payment-gateway@1.x/providerPaymentMethods",
+            "headers": {
+                "x-provider-app": "partnerintegrationbra.payment-provider@0.1.1-beta.1"
+            },
+            "public": true
+        },
+        "authorize": {
+            "path": "/_v/partnerintegrationbra.payment-provider/v0/payments",
+            "public": true
+        },
+        "cancel": {
+            "path": "/_v/partnerintegrationbra.payment-provider/v0/payments/:paymentId/cancellations",
+            "public": true
+        },
+        "settle": {
+            "path": "/_v/partnerintegrationbra.payment-provider/v0/payments/:paymentId/settlements",
+            "public": true
+        },
+        "refund": {
+            "path": "/_v/partnerintegrationbra.payment-provider/v0/payments/:paymentId/refunds",
+            "public": true
+        },
+        "inbound": {
+            "path": "/_v/partnerintegrationbra.payment-provider/v0/payments/:paymentId/inbound/:action",
+            "public": true
+        },
+        "paymentApp": {
+            "path": "/_v/partnerintegrationbra.payment-provider/v0/paymentapp",
+            "public": true
+        }
+    },
+    "runtimeArgs": [
+        "--max_old_space_size=204"
+    ]
+}

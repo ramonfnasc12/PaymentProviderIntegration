@@ -17,6 +17,7 @@
 }
 
 .buttonDanger {
+  margin-top: 10px;
   color: #fff;
   background-color: #d9534f;
   border-color: #d43f3a;
