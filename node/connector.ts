@@ -4,6 +4,8 @@ import {
   CancellationRequest,
   CancellationResponse,
   Cancellations,
+  InboundRequest,
+  InboundResponse,
   PaymentProvider,
   RefundRequest,
   RefundResponse,
@@ -47,5 +49,21 @@ export default class TestSuiteApprover extends PaymentProvider {
     return Settlements.approve(settlement, { settleId: '123456' })
   }
 
-  public inbound: undefined
+  public inbound(inbound: InboundRequest): Promise<InboundResponse> {
+    const response = async() => {
+      return {
+        paymentId: inbound.paymentId,
+        code: '200',
+        message: 'teste',
+        responseData: {
+          statusCode: 200,
+          contentType: 'Application/JSON',
+          content: inbound.requestData.body,
+        },
+        requestId: '1234',
+      }
+    }
+
+    return response()
+  }
 }

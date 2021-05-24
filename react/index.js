@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import styles from './index.css'
-
+const axios = require('axios');
 class ExampleTransactionAuthApp extends Component {
   constructor(props) {
     super(props)
     this.state = {
       loading: false,
+      text: "Iniciar"
     }
   }
 
@@ -18,7 +19,6 @@ class ExampleTransactionAuthApp extends Component {
   }
 
   componentDidMount() {
-    // In case you want to remove payment loading in order to show an UI.
     $(window).trigger('removePaymentLoading.vtex')
   }
 
@@ -26,16 +26,32 @@ class ExampleTransactionAuthApp extends Component {
     $(window).trigger('transactionValidation.vtex', [status])
   }
 
-  cancelTransaction = () => {
-    const parsedPayload = JSON.parse(this.props.appPayload)
+  cancelTransaction = async () => {
+    const {callbackUrl, paymentId} = JSON.parse(this.props.appPayload)
     this.setState({ loading: true })
-    this.respondTransaction(false)
+    const inboundAPI = axios.create({
+      timeout: 5000,
+    })
+    try{
+      const response = await inboundAPI.post('/_v/partnerintegrationbra.payment-provider/v0/cancelPayment',
+      {
+        paymentId,
+        status:"denied",
+        callbackUrl
+      });
+      console.log(response.data)
+      this.setState({text: response.data.text, loading: false})
+      this.respondTransaction(false)
+    }
+    catch(err){
+      this.setState({text: "Erro", loading: false})
+    }
 
     // fetch(parsedPayload.denyPaymentUrl).then(() => {
     // })
   }
 
-  confirmTransation = () => {
+  confirmTransation = async () => {
     const parsedPayload = JSON.parse(this.props.appPayload)
     this.setState({ loading: true })
     this.respondTransaction(true)
@@ -44,14 +60,42 @@ class ExampleTransactionAuthApp extends Component {
     // })
   }
 
+  inboundRequest = async () => {
+    const parsedPayload = JSON.parse(this.props.appPayload)
+    this.setState({ loading: true })
+
+    const inboundAPI = axios.create({
+      //baseURL: body.inboundRequestsUrl.split('/:')[0],
+      timeout: 5000,
+    })
+    try{
+      const response = await inboundAPI.post('/_v/partnerintegrationbra.payment-provider/v0/paymentapp',
+      {
+        inboundRequestsUrl: parsedPayload.inboundRequestsUrl
+      });
+      console.log(response.data)
+      this.setState({text: response.data.text, loading: false})
+    }
+    catch(err){
+      this.setState({text: "Erro", loading: false})
+    }
+  }
+
   render() {
-    const { scriptLoaded, loading } = this.state
+    const { loading, text } = this.state
 
     return (
       <div className={styles.wrapper}>
         {!loading ? (
           <>
-            <h1>Pedro te amo</h1>
+            <h1>{text}</h1>
+            <button
+              id="payment-app-inbound"
+              className={styles.buttonInbound}
+              onClick={this.inboundRequest}>
+              Inbound
+            </button>
+
             <button
               id="payment-app-confirm"
               className={styles.buttonSuccess}

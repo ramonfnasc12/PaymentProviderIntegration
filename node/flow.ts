@@ -16,6 +16,7 @@ type Flow =
   | 'AsyncDenied'
   | 'BankInvoice'
   | 'Redirect'
+  | 'PaymentApp'
 
 export const flows: Record<
   Flow,
@@ -61,13 +62,35 @@ export const flows: Record<
 
   BankInvoice: (request, callback) => {
     callback(
-      Authorizations.deny(request, {
-        //  authorizationId: randomString(),
-        //  nsu: randomString(),
+      Authorizations.approve(request, {
+        authorizationId: randomString(),
+        nsu: randomString(),
         tid: randomString(),
       })
     )
-    const { paymentId, inboundRequestsUrl } = request
+    const { paymentId } = request
+
+    return {
+      paymentId,
+      status: 'undefined',
+      acquirer: null,
+      code: null,
+      message: null,
+      paymentAppData: null,
+      identificationNumber: undefined,
+      identificationNumberFormatted: undefined,
+      barCodeImageNumber: undefined,
+      barCodeImageType: undefined,
+      delayToCancel: 1000,
+      BankIssueInvoiceUrl: "https://www.google.com.br",
+      paymentUrl: "https://www.google.com.br",
+      tid: randomString(),
+    }
+  },
+
+  PaymentApp: (request) => {
+
+    const { paymentId, inboundRequestsUrl, callbackUrl } = request
 
     return {
       paymentId,
@@ -77,15 +100,13 @@ export const flows: Record<
       message: null,
       paymentAppData: {
         appName: 'partnerintegrationbra.payment-provider',
-        payload: JSON.stringify({ inboundRequestsUrl }),
+        payload: JSON.stringify({ inboundRequestsUrl, callbackUrl, paymentId }),
       },
       identificationNumber: undefined,
       identificationNumberFormatted: undefined,
       barCodeImageNumber: undefined,
       barCodeImageType: undefined,
       delayToCancel: 1000,
-      //  BankIssueInvoiceUrl: "https://www.google.com.br",
-      //  paymentUrl: "https://www.google.com.br",
       tid: randomString(),
     }
   },
@@ -123,11 +144,18 @@ const cardResponses: Record<CardNumber, Flow> = {
 }
 
 const isBankInvoiceAuthorization = (authorization: AuthorizationRequest) =>
-  ['BankInvoice', 'Boleto Bancário', 'OXXOP'].includes(
+  ['BankInvoice', 'Boleto Bancário'].includes(
     authorization.paymentMethod
   )
 
+  const isPaymentAppFlow = (authorization: AuthorizationRequest) =>
+  ['PaymentApp'].includes(
+    authorization.paymentMethod
+  )  
+
 const findFlow = (request: AuthorizationRequest): Flow => {
+  if (isPaymentAppFlow(request)) return 'PaymentApp'
+
   if (isBankInvoiceAuthorization(request)) return 'BankInvoice'
 
   if (isCardAuthorization(request)) {

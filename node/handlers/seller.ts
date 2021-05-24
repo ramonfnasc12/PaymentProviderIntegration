@@ -1,147 +1,59 @@
 import { json } from 'co-body'
 import axios from 'axios'
-//  import { PaymentProviderContext } from '@vtex/payment-provider'
+import { PaymentProviderContext } from '@vtex/payment-provider'
 
-
-export async function shelfSimulation(ctx: any) {
+export async function inboundRequest(ctx: PaymentProviderContext) {
   const body: {
-    skuID: string
-    endpoint: string
-    isVTEXer: boolean
-    wantDebugHeader: boolean
+    inboundRequestsUrl: string
   } = await json(ctx.req)
 
-  const shelfSimulationAPI = axios.create({
-    baseURL: body.endpoint,
+  const inboundAPI = axios.create({
+    baseURL: body.inboundRequestsUrl.split('/:')[0],
     timeout: 5000,
     headers: {
       'Proxy-Authorization': ctx.vtex.authToken,
-      Accept: `${
-        body.isVTEXer
-          ? body.wantDebugHeader
-            ? 'application/vnd.vtex.checkout.debug.v1+json'
-            : ''
-          : ''
-      }`,
-      VtexIdclientAutCookie: ctx.vtex.authToken,
     },
   })
 
   const request = {
-    items: [
-      {
-        id: body.skuID,
-        quantity: 1,
-        seller: '1',
-      },
-    ],
+    text:"Funcionou"
   }
 
-  const response = await shelfSimulationAPI.post(
-    `/pvt/orderForms/simulation?sc=${ctx.query.sc || 1}`,
+  const response = await inboundAPI.post(
+    "/teste",
     request
   )
 
   ctx.status = 200
-
-  ctx.body = {
-    request,
-    response: response.data,
-  }
+  ctx.body =  response.data
 }
 
-export async function cartSimulation(ctx: any) {
+export async function cancelPayment(ctx: PaymentProviderContext) {
   const body: {
-    skuID: string
-    endpoint: string
-    zipCode: string
-    isVTEXer: boolean
-    wantDebugHeader: boolean
+    callbackUrl: string,
+    paymentId: string,
+    status: string
   } = await json(ctx.req)
 
-  const cartSimulationAPI = axios.create({
-    baseURL: body.endpoint,
-    timeout: 5000,
-    headers: {
-      'Proxy-Authorization': ctx.vtex.authToken,
-      Accept: `${
-        body.isVTEXer
-          ? body.wantDebugHeader
-            ? 'application/vnd.vtex.checkout.debug.v1+json'
-            : ''
-          : ''
-      }`,
-      VtexIdclientAutCookie: ctx.vtex.authToken,
-    },
-  })
-
-  const postalCodeAPI = axios.create({
-    baseURL: `http://${ctx.vtex.account}.myvtex.com/api/checkout/pub/postal-code/BRA`,
+  const inboundAPI = axios.create({
+    baseURL: body.callbackUrl,
     timeout: 5000,
     headers: {
       'Proxy-Authorization': ctx.vtex.authToken,
     },
   })
-
-  const {
-    data: { geoCoordinates },
-  } = await postalCodeAPI.get(`/${body.zipCode}`)
 
   const request = {
-    items: [
-      {
-        id: body.skuID,
-        quantity: 1,
-        seller: '1',
-      },
-    ],
-    postalCode: body.zipCode,
-    country: 'BRA',
-    priceTables: [],
-    marketingData: null,
-    selectedSla: null,
-    clientProfileData: null,
-    shippingData: {
-      state: null,
-      city: null,
-      neighborhood: null,
-      street: null,
-      isFOB: false,
-      selectedAddresses: [
-        {
-          addressType: null,
-          receiverName: null,
-          addressId: null,
-          postalCode: body.zipCode,
-          city: null,
-          state: null,
-          country: 'BRA',
-          street: null,
-          number: null,
-          neighborhood: null,
-          complement: null,
-          reference: null,
-          geoCoordinates,
-        },
-      ],
-      logisticsInfo: [],
-    },
-    paymentData: null,
-    geoCoordinates,
-    isCheckedIn: false,
-    storeId: null,
-    checkedInPickupPointId: null,
-    orderFormId: null,
+    paymentId: body.paymentId,
+    status: body.status
   }
 
-  const response = await cartSimulationAPI.post(
-    `/pvt/orderForms/simulation?sc=${ctx.query.sc || 1}`,
+  const response = await inboundAPI.post(
+    "/",
     request
   )
 
   ctx.status = 200
-  ctx.body = {
-    request,
-    response: response.data,
-  }
+  ctx.body =  response.data
 }
+

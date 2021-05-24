@@ -20,13 +20,24 @@
   margin-top: 10px;
   color: #fff;
   background-color: #d9534f;
-  border-color: #d43f3a;
+  border: none;
+  border-radius: 5px;
 }
 
 .buttonSuccess {
   color: #fff;
+  border: none;
   background-color: #8bc34a;
-  border-color: #8bc34a;
+  border-radius: 5px;
+
+}
+
+.buttonInbound {
+  color: #fff;
+  background-color: #bbb810ea;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 10px;
 }
 
 .appPayload {
