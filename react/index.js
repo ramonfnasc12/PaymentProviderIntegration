@@ -6,7 +6,9 @@ class ExampleTransactionAuthApp extends Component {
     super(props)
     this.state = {
       loading: false,
-      text: "Iniciar"
+      text: "Payment App Integration",
+      appKey: null,
+      appToken: null
     }
   }
 
@@ -27,24 +29,24 @@ class ExampleTransactionAuthApp extends Component {
   }
 
   cancelTransaction = async () => {
-    const {callbackUrl, paymentId} = JSON.parse(this.props.appPayload)
+    const { callbackUrl, paymentId } = JSON.parse(this.props.appPayload)
     this.setState({ loading: true })
     const inboundAPI = axios.create({
       timeout: 5000,
     })
-    try{
+    try {
       const response = await inboundAPI.post('/_v/partnerintegrationbra.payment-provider/v0/cancelPayment',
-      {
-        paymentId,
-        status:"denied",
-        callbackUrl
-      });
+        {
+          paymentId,
+          status: "denied",
+          callbackUrl
+        });
       console.log(response.data)
-      this.setState({text: response.data.text, loading: false})
+      this.setState({ text: response.data.text, loading: false })
       this.respondTransaction(false)
     }
-    catch(err){
-      this.setState({text: "Erro", loading: false})
+    catch (err) {
+      this.setState({ text: "Erro", loading: false })
     }
 
     // fetch(parsedPayload.denyPaymentUrl).then(() => {
@@ -68,27 +70,29 @@ class ExampleTransactionAuthApp extends Component {
       //baseURL: body.inboundRequestsUrl.split('/:')[0],
       timeout: 5000,
     })
-    try{
+    try {
       const response = await inboundAPI.post('/_v/partnerintegrationbra.payment-provider/v0/paymentapp',
-      {
-        inboundRequestsUrl: parsedPayload.inboundRequestsUrl
-      });
+        {
+          inboundRequestsUrl: parsedPayload.inboundRequestsUrl
+        });
       console.log(response.data)
-      this.setState({text: response.data.text, loading: false})
+      this.setState({ text: response.data.text, appKey: response.data.appKey, appToken: response.data.appToken, loading: false })
     }
-    catch(err){
-      this.setState({text: "Erro", loading: false})
+    catch (err) {
+      this.setState({ text: "Erro", loading: false })
     }
   }
 
   render() {
-    const { loading, text } = this.state
+    const { loading, text, appKey, appToken } = this.state
 
     return (
       <div className={styles.wrapper}>
         {!loading ? (
           <>
             <h1>{text}</h1>
+            <h3>AppKey: {appKey ? appKey : 'Usar inbound' }</h3>
+            <h3>AppToken: {appToken ? appToken : 'Usar inbound'}</h3>
             <button
               id="payment-app-inbound"
               className={styles.buttonInbound}

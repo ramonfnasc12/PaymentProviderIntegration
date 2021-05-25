@@ -5,7 +5,7 @@ import {
 
 import { PaymentProviderService } from '@vtex/payment-provider'
 
-import { inboundRequest, cancelPayment } from './handlers/seller'
+import { inboundRequest, cancelPayment } from './handlers/paymentApp'
 //  import router from './routes'
 import TestSuiteApprover from './connector'
 

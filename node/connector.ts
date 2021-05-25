@@ -50,7 +50,7 @@ export default class TestSuiteApprover extends PaymentProvider {
   }
 
   public inbound(inbound: InboundRequest): Promise<InboundResponse> {
-    const response = async() => {
+    const response = async () => {
       return {
         paymentId: inbound.paymentId,
         code: '200',
@@ -58,7 +58,11 @@ export default class TestSuiteApprover extends PaymentProvider {
         responseData: {
           statusCode: 200,
           contentType: 'Application/JSON',
-          content: inbound.requestData.body,
+          content: JSON.stringify({
+            ...JSON.parse(inbound.requestData.body),
+            appKey: this.apiKey,
+            appToken: this.appToken,
+          }),
         },
         requestId: '1234',
       }
