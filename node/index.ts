@@ -1,7 +1,7 @@
 import {
   //  ClientsConfig,
   method,
-} from '@vtex/payment-provider/node_modules/@vtex/api'
+} from '@vtex/api'
 
 import { PaymentProviderService } from '@vtex/payment-provider'
 
