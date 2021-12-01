@@ -1,14 +1,14 @@
-declare namespace PaymentProvider{
+// declare namespace PaymentProvider{
 
-    export declare const BankInvoice: {
-        BankInvoice: "BankInvoice" | "Boleto Bancário";
-    };
+//     export declare const BankInvoice: {
+//         BankInvoice: "BankInvoice" | "Boleto Bancário";
+//     };
     
-    export interface BankInvoiceAuthorization extends Authorization {
-        paymentMethod: BankInvoice;
-    }
+//     export interface BankInvoiceAuthorization extends Authorization {
+//         paymentMethod: BankInvoice;
+//     }
 
-    export declare const isBankInvoiceAuthorization: (authorization: AuthorizationRequest) => authorization is BankInvoiceAuthorization;
+//     export declare const isBankInvoiceAuthorization: (authorization: AuthorizationRequest) => authorization is BankInvoiceAuthorization;
 
-}
+// }
 

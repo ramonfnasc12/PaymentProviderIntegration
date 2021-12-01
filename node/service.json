@@ -45,8 +45,8 @@
             "path": "/_v/partnerintegrationbra.payment-provider/v0/paymentapp",
             "public": true
         },
-        "cancelPayment": {
-            "path": "/_v/partnerintegrationbra.payment-provider/v0/cancelPayment",
+        "changeStatus": {
+            "path": "/_v/partnerintegrationbra.payment-provider/v0/changeStatus",
             "public": true
         }
     },

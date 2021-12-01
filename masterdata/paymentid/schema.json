@@ -1,0 +1,30 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "title": "PaymentId",
+    "type": "object",
+    "properties": {
+      "paymentId": {
+        "type": "string"
+      },
+      "status": {
+        "type":"string",
+        "enum": [
+          "undefined",
+          "approved",
+          "denied"
+        ]
+      }
+    },
+    "v-default-fields": [
+      "id",
+      "paymentId",
+      "status"
+    ],
+    "v-indexed": [
+      "id",
+      "paymentId",
+      "status"
+    ],
+    "v-cache": false
+  }
+  

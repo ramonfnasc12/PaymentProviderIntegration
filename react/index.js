@@ -29,13 +29,14 @@ class ExampleTransactionAuthApp extends Component {
   }
 
   cancelTransaction = async () => {
-    const { callbackUrl, paymentId } = JSON.parse(this.props.appPayload)
+    const { paymentId, callbackUrl } = JSON.parse(this.props.appPayload)
     this.setState({ loading: true })
     const inboundAPI = axios.create({
       timeout: 5000,
     })
+
     try {
-      const response = await inboundAPI.post('/_v/partnerintegrationbra.payment-provider/v0/cancelPayment',
+      const response = await inboundAPI.post('/_v/partnerintegrationbra.payment-provider/v0/changeStatus',
         {
           paymentId,
           status: "denied",
@@ -53,12 +54,28 @@ class ExampleTransactionAuthApp extends Component {
     // })
   }
 
-  confirmTransation = async () => {
-    const parsedPayload = JSON.parse(this.props.appPayload)
+  confirmTransaction = async () => {
+    const { paymentId, callbackUrl } = JSON.parse(this.props.appPayload)
     this.setState({ loading: true })
-    this.respondTransaction(true)
-    // fetch(parsedPayload.inboundRequestsUrl).then(() => {
-    //   this.respondTransaction(true)
+    const inboundAPI = axios.create({
+      timeout: 5000,
+    })
+    try {
+      const response = await inboundAPI.post('/_v/partnerintegrationbra.payment-provider/v0/changeStatus',
+        {
+          paymentId,
+          status: "approved",
+          callbackUrl
+        });
+      console.log(response.data)
+      this.setState({ text: response.data.text, loading: false })
+      this.respondTransaction(true)
+    }
+    catch (err) {
+      this.setState({ text: "Erro", loading: false })
+    }
+
+    // fetch(parsedPayload.denyPaymentUrl).then(() => {
     // })
   }
 
@@ -103,7 +120,7 @@ class ExampleTransactionAuthApp extends Component {
             <button
               id="payment-app-confirm"
               className={styles.buttonSuccess}
-              onClick={this.confirmTransation}>
+              onClick={this.confirmTransaction}>
               Confirmar
             </button>
 

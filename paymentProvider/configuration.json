@@ -104,6 +104,10 @@
     {
       "name": "OXXO",
       "allowsSplit": "onCapture"
+    },
+    {
+      "name": "MercadoPagoPro",
+      "allowsSplit": "onCapture"
     }
   ]
 }

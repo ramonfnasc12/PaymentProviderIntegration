@@ -30,6 +30,7 @@ export const flows: Record<
       authorizationId: randomString(),
       nsu: randomString(),
       tid: randomString(),
+      delayToAutoSettle: 1
     }),
 
   Denied: request => Authorizations.deny(request, { tid: randomString() }),
@@ -72,6 +73,7 @@ export const flows: Record<
 
     return {
       paymentId,
+      authorizationId: '1234',
       status: 'undefined',
       acquirer: null,
       code: null,
@@ -90,24 +92,27 @@ export const flows: Record<
 
   PaymentApp: (request) => {
 
-    const { paymentId, inboundRequestsUrl, callbackUrl } = request
+    const { paymentId, inboundRequestsUrl, callbackUrl, transactionId } = request
 
     return {
       paymentId,
+      paymentUrl: null,
+      authorizationId: '1234',
       status: 'undefined',
       acquirer: null,
       code: null,
       message: null,
       paymentAppData: {
         appName: 'partnerintegrationbra.payment-provider',
-        payload: JSON.stringify({ inboundRequestsUrl, callbackUrl, paymentId }),
+        payload: JSON.stringify({ inboundRequestsUrl, callbackUrl, paymentId, transactionId }),
       },
       identificationNumber: undefined,
       identificationNumberFormatted: undefined,
       barCodeImageNumber: undefined,
       barCodeImageType: undefined,
-      delayToCancel: 1000,
+      delayToCancel: 600,
       tid: randomString(),
+      nsu: randomString()
     }
   },
 
@@ -129,17 +134,19 @@ export const flows: Record<
 }
 
 export type CardNumber =
-  | '4444333322221111'
+  | '346716465047888'
   | '4444333322221112'
   | '4222222222222224'
   | '4222222222222225'
+  | '5364561739403228'
   | 'null'
 
 const cardResponses: Record<CardNumber, Flow> = {
-  '4444333322221111': 'Authorize',
+  '346716465047888': 'Authorize',
   '4444333322221112': 'Denied',
   '4222222222222224': 'AsyncApproved',
   '4222222222222225': 'AsyncDenied',
+  '5364561739403228': 'PaymentApp',
   null: 'Redirect',
 }
 
@@ -148,19 +155,23 @@ const isBankInvoiceAuthorization = (authorization: AuthorizationRequest) =>
     authorization.paymentMethod
   )
 
-  const isPaymentAppFlow = (authorization: AuthorizationRequest) =>
-  ['PaymentApp'].includes(
+const isPaymentAppFlow = (authorization: AuthorizationRequest) =>
+  ['PaymentApp', 'MercadoPagoPro'].includes(
     authorization.paymentMethod
-  )  
+  )
 
-const findFlow = (request: AuthorizationRequest): Flow => {
+const findFlow = (request: AuthorizationRequest, status?: string): Flow => {
+  if (status === 'approved') return 'Authorize'
+
+  if (status === "denied") return 'Denied'
+
   if (isPaymentAppFlow(request)) return 'PaymentApp'
 
   if (isBankInvoiceAuthorization(request)) return 'BankInvoice'
 
   if (isCardAuthorization(request)) {
     const { card } = request
-    const cardNumber = isTokenizedCard(card) ? null : card.number
+    const cardNumber = isTokenizedCard(card) ? (request.paymentMethod === 'American Express' ? '5364561739403228' : '346716465047888') : card.number
 
     return cardResponses[cardNumber as CardNumber]
   }
@@ -170,9 +181,10 @@ const findFlow = (request: AuthorizationRequest): Flow => {
 
 export const executeAuthorization = (
   request: AuthorizationRequest,
-  callback: (response: AuthorizationResponse) => void
+  callback: (response: AuthorizationResponse) => void,
+  status?: string
 ): AuthorizationResponse => {
-  const flow = findFlow(request)
+  const flow = findFlow(request, status)
 
   // eslint-disable-next-line no-console
   console.log(flow)
