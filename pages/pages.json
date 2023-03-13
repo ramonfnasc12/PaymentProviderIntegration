@@ -2,6 +2,9 @@
   "extensions": {
     "checkout/transactions/payment-provider": {
       "component": "index"
+    },
+    "checkout/universal/checkout-load": {
+      "component": "pages"
     }
   }
 }

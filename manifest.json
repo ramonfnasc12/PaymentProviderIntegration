@@ -1,9 +1,14 @@
 {
   "name": "payment-provider",
   "vendor": "partnerintegrationbra",
-  "version": "0.1.5-beta.1",
+  "version": "0.1.5",
   "title": "Payment Provider Example",
+  "credentialType": "absolute",
   "description": "Reference app for Payment-Provider protocol implementers",
+  "dependencies": {
+    "vtex.checkout": "0.x",
+    "vtex.render-runtime": "7.x"
+  },
   "builders": {
     "paymentProvider": "1.x",
     "node": "6.x",

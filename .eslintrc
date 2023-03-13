@@ -2,7 +2,6 @@
   "extends": "vtex",
   "root": true,
   "env": {
-    "node": true,
-    "react": false
+    "node": true
   }
 }
